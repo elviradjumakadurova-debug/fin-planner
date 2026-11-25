@@ -1,0 +1,141 @@
+      text-align: center; color: var(--muted); font-size: 11px; font-weight: 600;
+      cursor: pointer; flex: 1;
+    }
+    .nav-item.active { color: var(--primary); }
+    .nav-icon { font-size: 20px; display: block; margin-bottom: 3px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title">Мой Бюджет</div>
+      <div style="font-size: 13px; background: rgba(255,255,255,0.25); padding: 4px 10px; border-radius: 12px;">Сом (KGS)</div>
+    </div>
+    <div class="balance-label">Текущий баланс</div>
+    <div class="balance-amount" id="totalBalance">0 сом</div>
+    <div class="stats-row">
+      <div class="stat-box">
+        <span>Доходы</span>
+        <strong id="totalIncome">+0 сом</strong>
+      </div>
+      <div class="stat-box">
+        <span>Расходы</span>
+        <strong id="totalExpense">-0 сом</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
+  <div id="tab-home" class="container tab-content active">
+    <div class="section-title">Новая запись</div>
+    <div class="card">
+      <div class="form-group">
+        <input type="text" id="txTitle" placeholder="На что потратили или откуда доход?">
+      </div>
+      <div class="form-group">
+        <input type="number" id="txAmount" placeholder="Сумма в сомах">
+      </div>
+      <div class="form-group">
+        <select id="txCategory">
+          <option value="Еда и продукты">🛒 Еда и продукты</option>
+          <option value="Транспорт">🚕 Транспорт</option>
+          <option value="Дом и счета">🏠 Дом и счета</option>
+          <option value="Здоровье и уход">🌸 Здоровье и уход</option>
+          <option value="Зарплата / Доход">💰 Зарплата / Доход</option>
+          <option value="Другое">✨ Другое</option>
+        </select>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-income" onclick="addTx('income')">+ Доход</button>
+        <button class="btn btn-expense" onclick="addTx('expense')">− Расход</button>
+      </div>
+    </div>
+
+    <div class="section-title">История операций</div>
+    <div class="card" id="txList">
+      <p style="color: var(--muted); text-align: center; font-size: 14px;">Записей пока нет</p>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА 2: КОПИЛКА -->
+  <div id="tab-goals" class="container tab-content">
+    <div class="section-title">Моя финансовая цель</div>
+    <div class="card">
+      <div class="goal-header">
+        <span id="goalNameDisplay">Финансовая подушка</span>
+        <span id="goalPercent">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="goalBar" style="width: 0%;"></div>
+      </div>
+      <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">
+        Накоплено: <strong id="goalSaved" style="color: var(--text);">0</strong> из <strong id="goalTarget">50 000</strong> сом
+      </p>
+      <div class="form-group">
+        <input type="number" id="addGoalAmount" placeholder="Сколько добавить в копилку?">
+      </div>
+      <button class="btn btn-expense" style="width: 100%;" onclick="addToGoal()">Пополнить копилку</button>
+    </div>
+
+    <div class="section-title">Настроить цель</div>
+    <div class="card">
+      <div class="form-group">
+        <input type="text" id="newGoalName" placeholder="Название цели (например: Отпуск)">
+      </div>
+      <div class="form-group">
+        <input type="number" id="newGoalTarget" placeholder="Нужная сумма (сом)">
+      </div>
+      <button class="btn btn-income" style="width: 100%;" onclick="setGoal()">Сохранить новую цель</button>
+    </div>
+  </div>
+
+  <!-- ВКЛАДКА 3: СОВЕТЫ -->
+  <div id="tab-tips" class="container tab-content">
+    <div class="section-title">Правила финансовой грамотности</div>
+    <div class="card tip-card">
+      <h4>1. Правило 50 / 30 / 20</h4>
+      <p>Распределяйте доход так: 50% на обязательные нужды (еда, жилье, транспорт), 30% на желания и покупки для себя, 20% сразу откладывайте в копилку.</p>
+    </div>
+    <div class="card tip-card">
+      <h4>2. Сначала заплати себе</h4>
+      <p>Как только получили деньги — сразу переведите 10% в накопления. Не откладывайте то, что осталось в конце месяца, обычно не остается ничего.</p>
+    </div>
+    <div class="card tip-card">
+      <h4>3. Правило 24 часов</h4>
+      <p>Если хочется купить незапланированную вещь — отложите покупку на сутки. В 80% случаев желание пройдет, и вы сохраните бюджет.</p>
+    </div>
+  </div>
+
+  <!-- НИЖНЕЕ МЕНЮ -->
+  <div class="nav-bar">
+    <div class="nav-item active" onclick="switchTab('home', this)">
+      <span class="nav-icon">📊</span>Главная
+    </div>
+    <div class="nav-item" onclick="switchTab('goals', this)">
+      <span class="nav-icon">🎯</span>Копилка
+    </div>
+    <div class="nav-item" onclick="switchTab('tips', this)">
+      <span class="nav-icon">💡</span>Советы
+    </div>
+  </div>
+
+  <script>
+    let data = JSON.parse(localStorage.getItem('finApp_v1')) || {
+      transactions: [],
+      goal: { name: 'Финансовая подушка', saved: 0, target: 50000 }
+    };
+
+    function saveData() {
+      localStorage.setItem('finApp_v1', JSON.stringify(data));
+      render();
+    }
+
+    function addTx(type) {
+      const title = document.getElementById('txTitle').value.trim();
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const category = document.getElementById('txCategory').value;
+      if (!title || isNaN(amount) || amount <= 0) return alert('Введите название и сумму');
+      

@@ -1,10 +1,356 @@
-      text-align: center; color: var(--muted); font-size: 11px; font-weight: 600;
-      cursor: pointer; flex: 1;
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#d946ef">
+  <title>Мой Финансовый Планер</title>
+  <style>
+    :root {
+      --primary: #d946ef;
+      --pink: #f472b6;
+      --purple: #9333ea;
+      --bg: #fdf8fc;
+      --card: #ffffff;
+      --text: #2e1065;
+      --muted: #866799;
+      --border: #f3e8ff;
+      --green: #10b981;
+      --red: #f43f5e;
     }
-    .nav-item.active { color: var(--primary); }
-    .nav-icon { font-size: 20px; display: block; margin-bottom: 3px; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 90px;
+    }
+    .header {
+      background: linear-gradient(135deg, #c084fc 0%, #e879f9 48%, #f472b6 100%);
+      color: #ffffff;
+      padding: 28px 20px 34px;
+      border-bottom-left-radius: 32px;
+      border-bottom-right-radius: 32px;
+      box-shadow: 0 10px 25px rgba(217, 70, 239, 0.25);
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .currency-badge {
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.28);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+    .balance-label {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 4px;
+    }
+    .balance-amount {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .stat-box {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.22);
+      padding: 12px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .stat-box span {
+      display: block;
+      font-size: 12px;
+      opacity: 0.92;
+    }
+    .stat-box strong {
+      display: block;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+    .container {
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--text);
+    }
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 6px 20px rgba(147, 51, 234, 0.05);
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #ead8fc;
+      border-radius: 16px;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      background: #fdfaff;
+      transition: 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.12);
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-income {
+      background: #fce7f3;
+      color: #be185d;
+    }
+    .btn-expense {
+      background: linear-gradient(135deg, #d946ef, #f472b6);
+      color: #ffffff;
+      box-shadow: 0 6px 15px rgba(217, 70, 239, 0.28);
+    }
+    .tx-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f7effd;
+    }
+    .tx-item:last-child {
+      border-bottom: none;
+    }
+    .tx-info h4 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .tx-info p {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .tx-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tx-sum {
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .plus { color: var(--green); }
+    .minus { color: var(--red); }
+    .del-btn {
+      background: #fdf2f8;
+      color: #db2777;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Отчеты и диаграмма */
+    .chart-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0 16px;
+    }
+    .donut-chart {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: #f3e8ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 8px 20px rgba(192, 132, 252, 0.2);
+    }
+    .donut-hole {
+      width: 112px;
+      height: 112px;
+      background: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+    }
+    .donut-hole span {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .donut-hole strong {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 2px;
+    }
+    .cat-row {
+      margin-bottom: 14px;
+    }
+    .cat-row:last-child {
+      margin-bottom: 0;
+    }
+    .cat-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .cat-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .cat-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #f5ebff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .cat-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .summary-cell {
+      background: #fdf7ff;
+      border: 1px solid #f3e8ff;
+      border-radius: 16px;
+      padding: 12px;
+    }
+    .summary-cell span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .summary-cell strong {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    /* Копилка */
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: #fce7f3;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #c084fc, #f472b6);
+      border-radius: 12px;
+      transition: width 0.3s;
+    }
+
+    /* Нижнее меню */
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0 18px;
+      box-shadow: 0 -6px 25px rgba(147, 51, 234, 0.08);
+      border-top-left-radius: 26px;
+      border-top-right-radius: 26px;
+      border-top: 1px solid var(--border);
+    }
+    .nav-item {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      flex: 1;
+    }
+    .nav-item.active {
+      color: var(--primary);
+    }
+    .nav-icon {
+      font-size: 20px;
+      display: block;
+      margin-bottom: 3px;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -12,7 +358,7 @@
   <div class="header">
     <div class="header-top">
       <div class="header-title">Мой Бюджет</div>
-      <div style="font-size: 13px; background: rgba(255,255,255,0.25); padding: 4px 10px; border-radius: 12px;">Сом (KGS)</div>
+      <div class="currency-badge">Сом (KGS)</div>
     </div>
     <div class="balance-label">Текущий баланс</div>
     <div class="balance-amount" id="totalBalance">0 сом</div>
@@ -23,7 +369,7 @@
       </div>
       <div class="stat-box">
         <span>Расходы</span>
-        <strong id="totalExpense">-0 сом</strong>
+        <strong id="totalExpense">−0 сом</strong>
       </div>
     </div>
   </div>
@@ -33,7 +379,7 @@
     <div class="section-title">Новая запись</div>
     <div class="card">
       <div class="form-group">
-        <input type="text" id="txTitle" placeholder="На что потратили или откуда доход?">
+        <input type="text" id="txTitle" placeholder="Название (например: Продукты или Аванс)">
       </div>
       <div class="form-group">
         <input type="number" id="txAmount" placeholder="Сумма в сомах">
@@ -41,10 +387,11 @@
       <div class="form-group">
         <select id="txCategory">
           <option value="Еда и продукты">🛒 Еда и продукты</option>
-          <option value="Транспорт">🚕 Транспорт</option>
+          <option value="Красота и уход">🌸 Красота и уход</option>
+          <option value="Одежда и покупки">🛍️ Одежда и покупки</option>
           <option value="Дом и счета">🏠 Дом и счета</option>
-          <option value="Здоровье и уход">🌸 Здоровье и уход</option>
-          <option value="Зарплата / Доход">💰 Зарплата / Доход</option>
+          <option value="Транспорт">🚕 Транспорт</option>
+          <option value="Зарплата / Доход">💎 Зарплата / Доход</option>
           <option value="Другое">✨ Другое</option>
         </select>
       </div>
@@ -60,82 +407,4 @@
     </div>
   </div>
 
-  <!-- ВКЛАДКА 2: КОПИЛКА -->
-  <div id="tab-goals" class="container tab-content">
-    <div class="section-title">Моя финансовая цель</div>
-    <div class="card">
-      <div class="goal-header">
-        <span id="goalNameDisplay">Финансовая подушка</span>
-        <span id="goalPercent">0%</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="goalBar" style="width: 0%;"></div>
-      </div>
-      <p style="font-size: 13px; color: var(--muted); margin-bottom: 15px;">
-        Накоплено: <strong id="goalSaved" style="color: var(--text);">0</strong> из <strong id="goalTarget">50 000</strong> сом
-      </p>
-      <div class="form-group">
-        <input type="number" id="addGoalAmount" placeholder="Сколько добавить в копилку?">
-      </div>
-      <button class="btn btn-expense" style="width: 100%;" onclick="addToGoal()">Пополнить копилку</button>
-    </div>
-
-    <div class="section-title">Настроить цель</div>
-    <div class="card">
-      <div class="form-group">
-        <input type="text" id="newGoalName" placeholder="Название цели (например: Отпуск)">
-      </div>
-      <div class="form-group">
-        <input type="number" id="newGoalTarget" placeholder="Нужная сумма (сом)">
-      </div>
-      <button class="btn btn-income" style="width: 100%;" onclick="setGoal()">Сохранить новую цель</button>
-    </div>
-  </div>
-
-  <!-- ВКЛАДКА 3: СОВЕТЫ -->
-  <div id="tab-tips" class="container tab-content">
-    <div class="section-title">Правила финансовой грамотности</div>
-    <div class="card tip-card">
-      <h4>1. Правило 50 / 30 / 20</h4>
-      <p>Распределяйте доход так: 50% на обязательные нужды (еда, жилье, транспорт), 30% на желания и покупки для себя, 20% сразу откладывайте в копилку.</p>
-    </div>
-    <div class="card tip-card">
-      <h4>2. Сначала заплати себе</h4>
-      <p>Как только получили деньги — сразу переведите 10% в накопления. Не откладывайте то, что осталось в конце месяца, обычно не остается ничего.</p>
-    </div>
-    <div class="card tip-card">
-      <h4>3. Правило 24 часов</h4>
-      <p>Если хочется купить незапланированную вещь — отложите покупку на сутки. В 80% случаев желание пройдет, и вы сохраните бюджет.</p>
-    </div>
-  </div>
-
-  <!-- НИЖНЕЕ МЕНЮ -->
-  <div class="nav-bar">
-    <div class="nav-item active" onclick="switchTab('home', this)">
-      <span class="nav-icon">📊</span>Главная
-    </div>
-    <div class="nav-item" onclick="switchTab('goals', this)">
-      <span class="nav-icon">🎯</span>Копилка
-    </div>
-    <div class="nav-item" onclick="switchTab('tips', this)">
-      <span class="nav-icon">💡</span>Советы
-    </div>
-  </div>
-
-  <script>
-    let data = JSON.parse(localStorage.getItem('finApp_v1')) || {
-      transactions: [],
-      goal: { name: 'Финансовая подушка', saved: 0, target: 50000 }
-    };
-
-    function saveData() {
-      localStorage.setItem('finApp_v1', JSON.stringify(data));
-      render();
-    }
-
-    function addTx(type) {
-      const title = document.getElementById('txTitle').value.trim();
-      const amount = parseFloat(document.getElementById('txAmount').value);
-      const category = document.getElementById('txCategory').value;
-      if (!title || isNaN(amount) || amount <= 0) return alert('Введите название и сумму');
       
